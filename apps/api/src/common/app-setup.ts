@@ -25,6 +25,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
       code = 'NOT_FOUND';
       message = error.message ?? 'Not found';
       details = undefined;
+    } else if (status === 409) {
+      code = error.response?.code ?? 'CONFLICT';
+      message = error.response?.message ?? error.message ?? 'Conflict';
+      details = undefined;
     } else {
       code = 'INTERNAL_ERROR';
       message = 'Internal server error';
