@@ -1,10 +1,13 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule, ObserveInstrument } from './app.module.js';
+import { config } from './database/config.js';
+import { AppModule } from './app.module.js';
+import { configureApp } from './common/app-setup.js';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    instrument: ObserveInstrument,
+    instrument: undefined,
   });
-  await app.listen(process.env.PORT ?? 3000);
+  configureApp(app);
+  await app.listen(config.port);
 }
 await bootstrap();
