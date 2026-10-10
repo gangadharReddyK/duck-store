@@ -1,4 +1,4 @@
-import { Color, Size } from '@/common/enums';
+import { Color, Size } from '../../common/enums.js';
 
 export type DuckResponse = {
   id: number;
