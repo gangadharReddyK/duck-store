@@ -1,0 +1,59 @@
+.duck-warehouse-page {
+  padding: 16px;
+  font-family: sans-serif;
+}
+
+.duck-warehouse-page h1 {
+  margin: 0 0 16px;
+}
+
+.duck-warehouse-page-actions {
+  margin-bottom: 16px;
+}
+
+.duck-warehouse-page .duck-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.duck-warehouse-page th,
+.duck-warehouse-page td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.duck-warehouse-page th {
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
+
+.duck-warehouse-page th:hover {
+  background-color: #e5e5e5;
+}
+
+.duck-warehouse-page button {
+  margin-right: 4px;
+  padding: 4px 8px;
+}
+
+.duck-loading,
+.duck-error {
+  padding: 8px;
+  margin-bottom: 16px;
+  border-radius: 4px;
+}
+
+.duck-loading {
+  background-color: #f0f8ff;
+  color: #333;
+}
+
+.duck-error {
+  background-color: #ffe6e6;
+  color: #d32f2f;
+}
+
+.sortable {
+  user-select: none;
+}
