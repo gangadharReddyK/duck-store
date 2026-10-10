@@ -1,7 +1,8 @@
 import type { Pool } from 'mysql2/promise.js';
+import { Inject } from '@nestjs/common';
 
 export class DuckRepository {
-  constructor(private readonly pool: Pool) {}
+  constructor(@Inject('DB_POOL') private readonly pool: Pool) {}
 
   async upsert(color: string, size: string, priceCents: number, qty: number): Promise<void> {
     await this.pool.query(

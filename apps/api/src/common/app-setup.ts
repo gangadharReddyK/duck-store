@@ -7,6 +7,7 @@ export const GLOBAL_PREFIX = 'api';
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(error: any, host: ArgumentsHost) {
+    console.error('### HTTP ERROR ###', error.message, error.stack);
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
