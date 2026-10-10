@@ -1,0 +1,24 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+# Ignored default folder with query files
+/queries/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+/node_modules
+
+node_modules/
+dist/
+coverage/
+.idea/
+*.iml
+.vscode/
+.env
+*.log
+.DS_Store
+# AI agent kit files — keep out of Git
+/AGENTS.md
+/.ai/SPEC.md

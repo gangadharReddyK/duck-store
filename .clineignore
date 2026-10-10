@@ -1,0 +1,12 @@
+node_modules/
+dist/
+build/
+coverage/
+.idea/
+*.iml
+package-lock.json
+*.png
+*.jpg
+*.svg
+*.log
+.git/
