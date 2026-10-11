@@ -17,19 +17,14 @@ export class LowestPriceResolver implements PriceResolver {
     const normalizedSize = size.toLowerCase();
 
     const priceCents = await this.duckRepository.findLowestPrice(normalizedColor, normalizedSize, quantity);
-    
+
     if (priceCents !== null) {
       return { price: new Money(priceCents) };
     }
-    
+
     // Check if any active duck exists with this color+size to distinguish 404 vs 409
-    const [anyRows] = await this.duckRepository.pool.query(
-      'SELECT 1 FROM duck WHERE LOWER(color) = ? AND LOWER(size) = ? AND deleted = 0 LIMIT 1',
-      [normalizedColor, normalizedSize]
-    );
-    
-    const hasAnyActiveDuck = Array.isArray(anyRows) && anyRows.length > 0;
-    
+    const hasAnyActiveDuck = await this.duckRepository.existsActiveDuck(normalizedColor, normalizedSize);
+
     if (!hasAnyActiveDuck) {
       throw new HttpException(
         { code: 'NO_MATCHING_DUCK', message: 'No matching duck found' },

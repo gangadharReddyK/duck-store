@@ -1,3 +1,4 @@
+import type { Money } from '../money.js';
 import { PricingContext, LineItem } from './pricing-context.js';
 
 /**

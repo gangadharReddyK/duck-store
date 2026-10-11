@@ -1,4 +1,4 @@
-import type { Pool } from 'mysql2/promise.js';
+import type { Pool, RowDataPacket, ResultSetHeader } from 'mysql2/promise.js';
 import { Inject } from '@nestjs/common';
 import { HttpException } from '@nestjs/common';
 
@@ -9,10 +9,11 @@ type DuckRow = {
   price_cents: number;
   quantity: number;
   version: number;
-};
+  deleted?: number;
+} & RowDataPacket;
 
 export class DuckRepository {
-  private readonly selectColumns = 'id, color, size, price_cents, quantity, version';
+  private readonly selectColumns = 'id, color, size, price_cents, quantity, version, deleted';
 
   constructor(@Inject('DB_POOL') private readonly pool: Pool) {}
 
@@ -29,11 +30,11 @@ export class DuckRepository {
     size: string,
     priceCents: number,
   ): Promise<DuckRow | null> {
-    const [rows] = await this.pool.query(
+    const [rows] = await this.pool.query<DuckRow[]>(
       `SELECT ${this.selectColumns} FROM duck WHERE color = ? AND size = ? AND price_cents = ? AND deleted = 0`,
       [color, size, priceCents],
     );
-    return Array.isArray(rows) && rows.length > 0 ? (rows[0] as DuckRow) : null;
+    return Array.isArray(rows) && rows.length > 0 ? rows[0] : null;
   }
 
   /**
@@ -44,18 +45,28 @@ export class DuckRepository {
   async findLowestPrice(color: string, size: string, minQuantity: number): Promise<number | null> {
     const normColor = color.toUpperCase();
     const normSize = size.toUpperCase();
-    const [rows] = await this.pool.query(
+    const [rows] = await this.pool.query<DuckRow[]>(
       'SELECT price_cents FROM duck WHERE color = ? AND size = ? AND deleted = 0 AND quantity >= ? ' +
       'ORDER BY price_cents ASC LIMIT 1',
       [normColor, normSize, minQuantity],
     );
-    const row = Array.isArray(rows) && rows.length > 0 ? rows[0] as DuckRow : null;
+    const row = Array.isArray(rows) && rows.length > 0 ? rows[0] : null;
     return row ? row.price_cents : null;
+  }
+
+  async existsActiveDuck(color: string, size: string): Promise<boolean> {
+    const normColor = color.toLowerCase();
+    const normSize = size.toLowerCase();
+    const [anyRows] = await this.pool.query<RowDataPacket[]>(
+      'SELECT 1 FROM duck WHERE LOWER(color) = ? AND LOWER(size) = ? AND deleted = 0 LIMIT 1',
+      [normColor, normSize]
+    );
+    return Array.isArray(anyRows) && anyRows.length > 0;
   }
 
   async listActive(order: 'asc' | 'desc' = 'desc'): Promise<DuckRow[]> {
     const direction = order === 'asc' ? 'ASC' : 'DESC';
-    const [rows] = await this.pool.query(
+    const [rows] = await this.pool.query<DuckRow[]>(
       `SELECT ${this.selectColumns} FROM duck WHERE deleted = 0 ORDER BY quantity ${direction}, id ASC`,
     );
     return Array.isArray(rows) ? rows : [];
@@ -68,16 +79,17 @@ export class DuckRepository {
     version: number,
   ): Promise<DuckRow> {
     try {
-      const [result] = await this.pool.query(
+      const [result] = await this.pool.query<ResultSetHeader>(
         'UPDATE duck SET price_cents = ?, quantity = ?, version = version + 1 WHERE id = ? AND deleted = 0 AND version = ?',
         [priceCents, quantity, id, version],
       );
-      const affected = result.affectedRows as number;
+      const affected = result.affectedRows;
       if (affected === 0) {
         await this.throwForMissingOrStale(id);
       }
-      const [rows] = await this.pool.query(`SELECT ${this.selectColumns} FROM duck WHERE id = ?`, [id]);
-      return Array.isArray(rows) && rows.length > 0 ? (rows[0] as DuckRow) : null;
+      const [rows] = await this.pool.query<DuckRow[]>(`SELECT ${this.selectColumns} FROM duck WHERE id = ?`, [id]);
+      // throwForMissingOrStale always throws if affected === 0, so this branch always has rows
+      return rows[0];
     } catch (err) {
       if (err instanceof HttpException) throw err;
       const errCode = (err as { code?: unknown })?.code;
@@ -92,7 +104,7 @@ export class DuckRepository {
   }
 
   private async throwForMissingOrStale(id: number): Promise<never> {
-    const [rows] = await this.pool.query('SELECT id, deleted FROM duck WHERE id = ?', [id]);
+    const [rows] = await this.pool.query<DuckRow[]>('SELECT id, deleted FROM duck WHERE id = ?', [id]);
     const row = Array.isArray(rows) && rows.length > 0 ? rows[0] : null;
     if (!row || row.deleted === 1) {
       throw new HttpException(
@@ -107,11 +119,11 @@ export class DuckRepository {
   }
 
   async softDelete(id: number): Promise<void> {
-    const [result] = await this.pool.query(
+    const [result] = await this.pool.query<ResultSetHeader>(
       'UPDATE duck SET deleted = 1, version = version + 1 WHERE id = ? AND deleted = 0',
       [id],
     );
-    const affected = result.affectedRows as number;
+    const affected = result.affectedRows;
     if (affected === 0) {
       throw new HttpException(
         { code: 'NOT_FOUND', message: 'Duck not found', details: undefined },
