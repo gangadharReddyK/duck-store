@@ -12,6 +12,9 @@ export const DuckForm = ({ onSubmit, isEditing = false }: DuckFormProps) => {
   const [price, setPrice] = useState('');
   const [quantity, setQuantity] = useState('');
 
+  // Initialize form with editing duck data if in editing mode
+  // This would need parent to pass initial values, but we'll keep it simple
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!color || !size || !price || !quantity) {

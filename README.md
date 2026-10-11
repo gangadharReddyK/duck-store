@@ -161,4 +161,4 @@ cd apps/api && npm run test:e2e
 
 ## AI Usage Note
 
-I used my knowledge of NestJS, MySQL best practices, and testing frameworks to create this documentation based on the project structure and specifications.
+I have leveraged my software development expertise in Java, Microservices, JSP, Angular, and testing frameworks to develop this project based on the assessment documentation. Since Digital Harbour primarily works with NestJS and React, the project was developed using these technologies with the assistance of AI tools.

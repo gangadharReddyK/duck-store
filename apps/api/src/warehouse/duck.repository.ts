@@ -23,7 +23,7 @@ export class DuckRepository {
        'ON DUPLICATE KEY UPDATE quantity = duck.quantity + new.quantity, version = duck.version + 1',
        [color, size, priceCents, qty],
      );
-   return { affectedRows: result.affectedRows, lastInsertId: result.lastInsertId };
+   return { affectedRows: result.affectedRows, lastInsertId: result.insertId };
    }
 
   async findActive(
