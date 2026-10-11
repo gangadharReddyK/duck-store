@@ -1,4 +1,5 @@
 import type { DuckResponse } from '../api/ducksApi';
+import './DuckTable.css';
 
 interface DuckTableProps {
   ducks: DuckResponse[];
@@ -22,7 +23,7 @@ export const DuckTable = ({ ducks, direction, onToggleSort, onEdit, onDelete }: 
           <th>SIZE</th>
           <th>PRICE</th>
           <th onClick={onToggleSort} className="sortable">
-            QUANTITY {direction === 'asc' ? '▲' : '▼'}
+            QUANTITY <span className="sort-indicator">{direction === 'asc' ? '▲' : '▼'}</span>
           </th>
           <th>ACTIONS</th>
         </tr>
@@ -35,9 +36,9 @@ export const DuckTable = ({ ducks, direction, onToggleSort, onEdit, onDelete }: 
             <td>{duck.size}</td>
             <td>{formatPrice(duck)}</td>
             <td>{duck.quantity}</td>
-            <td>
-              <button onClick={() => onEdit(duck)}>Edit</button>
-              <button onClick={() => onDelete(duck)}>Delete</button>
+            <td className="action-cell">
+              <button onClick={() => onEdit(duck)} aria-label="Edit" className="edit-btn">Edit</button>
+              <button onClick={() => onDelete(duck)} aria-label="Delete" className="delete-btn">Delete</button>
             </td>
           </tr>
         ))}

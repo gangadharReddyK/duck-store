@@ -68,11 +68,13 @@ export const DuckWarehousePage = () => {
     <div className="duck-warehouse-page">
       <h1>Duck Warehouse</h1>
       <div className="duck-warehouse-page-actions">
-        <button onClick={handleAdd}>Add duck</button>
+        <button onClick={handleAdd} className="add-new-duck-btn">Add new duck</button>
         {showAddForm && (
           <DuckForm
             onSubmit={handleSubmit}
             isEditing={!!editingDuck}
+            initialDuck={editingDuck}
+            onCancel={() => setShowAddForm(false)}
           />
         )}
       </div>

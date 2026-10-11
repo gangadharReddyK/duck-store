@@ -1,19 +1,34 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { DuckResponse } from '../api/ducksApi';
+import './DuckForm.css';
 
 interface DuckFormProps {
   onSubmit: (duck: Partial<DuckResponse>) => void;
   isEditing?: boolean;
+  initialDuck?: DuckResponse | null;
+  onCancel?: () => void;
 }
 
-export const DuckForm = ({ onSubmit, isEditing = false }: DuckFormProps) => {
-  const [color, setColor] = useState('');
-  const [size, setSize] = useState('');
-  const [price, setPrice] = useState('');
-  const [quantity, setQuantity] = useState('');
+export const DuckForm = ({ onSubmit, isEditing = false, initialDuck = null, onCancel }: DuckFormProps) => {
+  const [color, setColor] = useState(initialDuck?.color ?? '');
+  const [size, setSize] = useState(initialDuck?.size ?? '');
+  const [price, setPrice] = useState(initialDuck?.price !== undefined ? String(initialDuck.price) : '');
+  const [quantity, setQuantity] = useState(initialDuck?.quantity !== undefined ? String(initialDuck.quantity) : '');
 
-  // Initialize form with editing duck data if in editing mode
-  // This would need parent to pass initial values, but we'll keep it simple
+  // Re-initialize form when initialDuck changes
+  useEffect(() => {
+    if (initialDuck) {
+      setColor(initialDuck.color);
+      setSize(initialDuck.size);
+      setPrice(String(initialDuck.price));
+      setQuantity(String(initialDuck.quantity));
+    } else {
+      setColor('');
+      setSize('');
+      setPrice('');
+      setQuantity('');
+    }
+  }, [initialDuck]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,6 +52,10 @@ export const DuckForm = ({ onSubmit, isEditing = false }: DuckFormProps) => {
       price: parseFloat(price),
       quantity: qtyNum,
     });
+  };
+
+  const handleCancel = () => {
+    onCancel?.();
   };
 
   return (
@@ -84,7 +103,12 @@ export const DuckForm = ({ onSubmit, isEditing = false }: DuckFormProps) => {
           step="1"
         />
       </div>
-      <button type="submit">Add Duck</button>
+      <div className="form-actions">
+        <button type="submit">{isEditing ? 'Update Duck' : 'Add Duck'}</button>
+        <button type="button" onClick={handleCancel} className="cancel-button">
+          Cancel
+        </button>
+      </div>
     </form>
   );
 };

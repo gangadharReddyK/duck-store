@@ -33,7 +33,10 @@ export const useDucks = (): UseDucksReturn => {
     }
   };
 
-  const toggleSort = () => setDirection((d) => (d === 'asc' ? 'desc' : 'asc'));
+  const toggleSort = () => {
+    setDirection((d) => (d === 'asc' ? 'desc' : 'asc'));
+    load();
+  };
 
   const refresh = () => load();
 
