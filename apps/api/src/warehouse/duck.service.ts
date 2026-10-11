@@ -15,24 +15,23 @@ export class DuckService {
   async add(dto: CreateDuckDto): Promise<{ duck: any; merged: boolean }> {
     const priceCents = Math.round(dto.price * 100);
 
-    await this.duckRepository.upsert(dto.color, dto.size, priceCents, dto.quantity);
-    const row = await this.duckRepository.findActive(dto.color, dto.size, priceCents);
-
-    if (!row) {
-      throw new Error('Failed to find active duck after upsert');
-    }
-
-    const merged = row.version > 0;
-    const duck = {
-      id: row.id,
-      color: row.color as Color,
-      size: row.size as Size,
-      price: row.price_cents / 100,
-      quantity: row.quantity,
-      version: row.version,
-    };
-
-    return { duck, merged };
+     const { affectedRows } = await this.duckRepository.upsert(dto.color, dto.size, priceCents, dto.quantity);
+     const row = await this.duckRepository.findActive(dto.color, dto.size, priceCents);
+     if (!row) {
+       throw new Error('Failed to find active duck after upsert');
+     }
+ 
+     const merged = affectedRows === 2;
+     const duck = {
+       id: row.id,
+       color: row.color as Color,
+       size: row.size as Size,
+       price: row.price_cents / 100,
+       quantity: row.quantity,
+       version: row.version,
+     };
+ 
+     return { duck, merged };
   }
 
   async list(order?: 'asc' | 'desc'): Promise<any[]> {

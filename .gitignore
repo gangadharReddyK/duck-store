@@ -22,3 +22,4 @@ coverage/
 # AI agent kit files — keep out of Git
 /AGENTS.md
 /.ai/SPEC.md
+*.tsbuildinfo

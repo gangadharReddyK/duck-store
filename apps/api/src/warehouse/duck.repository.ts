@@ -15,15 +15,16 @@ type DuckRow = {
 export class DuckRepository {
   private readonly selectColumns = 'id, color, size, price_cents, quantity, version, deleted';
 
-  constructor(@Inject('DB_POOL') private readonly pool: Pool) {}
+    constructor(@Inject('DB_POOL') private readonly pool: Pool) {}
 
-  async upsert(color: string, size: string, priceCents: number, qty: number): Promise<void> {
-    await this.pool.query(
-      'INSERT INTO duck (color, size, price_cents, quantity) VALUES (?, ?, ?, ?) AS new ' +
-      'ON DUPLICATE KEY UPDATE quantity = duck.quantity + new.quantity, version = duck.version + 1',
-      [color, size, priceCents, qty],
-    );
-  }
+   async upsert(color: string, size: string, priceCents: number, qty: number): Promise<{ affectedRows: number; lastInsertId: number }> {
+     const [result] = await this.pool.query<ResultSetHeader>(
+       'INSERT INTO duck (color, size, price_cents, quantity) VALUES (?, ?, ?, ?) AS new ' +
+       'ON DUPLICATE KEY UPDATE quantity = duck.quantity + new.quantity, version = duck.version + 1',
+       [color, size, priceCents, qty],
+     );
+   return { affectedRows: result.affectedRows, lastInsertId: result.lastInsertId };
+   }
 
   async findActive(
     color: string,
