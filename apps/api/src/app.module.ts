@@ -4,12 +4,14 @@ import { HealthController } from './health/health.controller.js';
 import { DuckController } from './warehouse/duck.controller.js';
 import { DuckService } from './warehouse/duck.service.js';
 import { DuckRepository } from './warehouse/duck.repository.js';
+import { StoreController } from './store/store.controller.js';
+import { OrderService } from './store/order.service.js';
 
 @Module({
   imports: [
     DatabaseModule,
   ],
-  controllers: [HealthController, DuckController],
-  providers: [DuckService, DuckRepository],
+  controllers: [HealthController, DuckController, StoreController],
+  providers: [DuckService, DuckRepository, OrderService],
 })
 export class AppModule {}

@@ -36,6 +36,23 @@ export class DuckRepository {
     return Array.isArray(rows) && rows.length > 0 ? (rows[0] as DuckRow) : null;
   }
 
+  /**
+   * Finds the lowest-priced active lot of the given color+size with quantity >= minQuantity.
+   * One SQL query, no loops over all ducks.
+   * Returns null if no such lot exists.
+   */
+  async findLowestPrice(color: string, size: string, minQuantity: number): Promise<number | null> {
+    const normColor = color.toUpperCase();
+    const normSize = size.toUpperCase();
+    const [rows] = await this.pool.query(
+      'SELECT price_cents FROM duck WHERE color = ? AND size = ? AND deleted = 0 AND quantity >= ? ' +
+      'ORDER BY price_cents ASC LIMIT 1',
+      [normColor, normSize, minQuantity],
+    );
+    const row = Array.isArray(rows) && rows.length > 0 ? rows[0] as DuckRow : null;
+    return row ? row.price_cents : null;
+  }
+
   async listActive(order: 'asc' | 'desc' = 'desc'): Promise<DuckRow[]> {
     const direction = order === 'asc' ? 'ASC' : 'DESC';
     const [rows] = await this.pool.query(

@@ -22,8 +22,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
       message = error.response.message ?? 'Validation failed';
       details = error.response.details;
     } else if (status === 404) {
-      code = 'NOT_FOUND';
-      message = error.message ?? 'Not found';
+      code = error.response?.code ?? 'NOT_FOUND';
+      message = error.response?.message ?? error.message ?? 'Not found';
       details = undefined;
     } else if (status === 409) {
       code = error.response?.code ?? 'CONFLICT';
