@@ -11,17 +11,14 @@ async function bootstrap() {
   configureApp(app);
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Duck Store API')
-    .setDescription('API for managing ducks, store operations, and health checks. You can use this interface to document, share, and test your APIs directly from your browser.')
+    .setDescription('API for managing ducks, store operations, and health checks.')
     .setVersion('1.0')
-    .addTag('ducks', 'Duck warehouse operations')
-    .addTag('store', 'Store and order operations')
-    .addTag('health', 'Health check endpoints')
-    .addServer('/api')
+    .addTag('ducks')
+    .addTag('store')
+    .addTag('health')
     .build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('docs', app, document, {
-    customSiteTitle: 'Duck Store API - Swagger UI',
-  });
+  SwaggerModule.setup('api/docs', app, document);
   await app.listen(config.port);
 }
 await bootstrap();
