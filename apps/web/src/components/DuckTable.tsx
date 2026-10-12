@@ -22,7 +22,7 @@ export const DuckTable = ({ ducks, direction, onToggleSort, onEdit, onDelete }: 
           <th>COLOR</th>
           <th>SIZE</th>
           <th>PRICE</th>
-          <th onClick={onToggleSort} className="sortable">
+          <th onClick={(e) => { e.preventDefault(); onToggleSort(); }} className="sortable">
             QUANTITY <span className="sort-indicator">{direction === 'asc' ? '▲' : '▼'}</span>
           </th>
           <th>ACTIONS</th>
