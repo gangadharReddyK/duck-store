@@ -104,3 +104,18 @@
     font-size: 28px;
   }
 }
+
+/* Footer */
+.duck-warehouse-footer {
+  margin-top: 32px;
+  padding: 16px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.duck-warehouse-footer::before {
+  content: '🦆 ';
+}

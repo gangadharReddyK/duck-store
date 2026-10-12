@@ -85,6 +85,9 @@ export const DuckWarehousePage = () => {
         onEdit={handleEdit}
         onDelete={handleDelete}
       />
+      <footer className="duck-warehouse-footer">
+        Developed by Gangadhar Reddy
+      </footer>
     </div>
   );
 };
