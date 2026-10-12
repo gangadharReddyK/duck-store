@@ -28,6 +28,8 @@ cd ../web && npm run dev
 
 **Access URLs:**
 - API: http://localhost:3000
+- API Base Path: `/api` (all endpoints are prefixed with `/api`)
+- Swagger UI: http://localhost:3000/api/docs
 - Web: http://localhost:5173
 
 ## Environment Configuration
@@ -104,14 +106,27 @@ CREATE TABLE duck (
 }
 ```
 
+## API Documentation
+
+This API is fully documented using Swagger/OpenAPI. The Swagger UI provides interactive documentation where you can:
+
+- View all available endpoints organized by tags (ducks, store, health, app)
+- See request/response schemas and examples
+- Test endpoints directly from your browser
+- Understand parameter requirements and validation rules
+
+**Swagger UI URL:** `http://localhost:3000/api/docs`
+
 ## Testing
 
 ### Unit Tests (Business Rules)
+
 ```bash
 cd apps/api && npm test
 ```
 
 ### E2E Tests (Requires Docker)
+
 ```bash
 cd apps/api && npm run test:e2e
 ```
@@ -140,10 +155,6 @@ cd apps/api && npm run test:e2e
 | Percentages on discounted subtotal | Percentage of base only | Accurate volume discount calculation |
 | Per-line rounding | Sum then round total | Ensures fair per-line pricing |
 | Thresholds | Flat discount | Tiered pricing better reflects volume economics |
-| Destination handling | Single shipping cost | Complex destination logic requires flexibility |
-| Package handling | Mixed materials | Size-based packaging ensures proper protection |
-| Protection handling | Static materials | Shipping mode requirements vary |
-| Volume discount 20% when qty > 100 | 10% discount | More attractive to bulk buyers |
 | Air bulk discount 15% when qty > 1000 | No bulk discount | Encourages larger air shipments |
 | Sort by quantity desc | Sort by id asc | Better UX for inventory viewing |
 | Active key generated | Manual tracking | Automatic deduplication |
