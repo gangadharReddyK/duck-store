@@ -28,7 +28,7 @@ cd ../web && npm run dev
 
 **Access URLs:**
 - API: http://localhost:3000
-- API Base Path: `/api` (all endpoints are prefixed with `/api`)
+- API Base Path: `/api/v1` (all endpoints are prefixed with `/api/v1`)
 - Swagger UI: http://localhost:3000/api/docs
 - Web: http://localhost:5173
 
@@ -67,40 +67,40 @@ CREATE TABLE duck (
 
 ### Warehouse Endpoints
 
-**POST /api/ducks** – Create or merge a duck (201/200)
+**POST /api/v1/ducks** – Create or merge a duck (201/200)
 ```json
 {
   "color": "Red",
   "size": "Large",
-  "price": 2500,
+  "price": 25.00,
   "quantity": 5
 }
 ```
 
-**GET /api/ducks** – List ducks (sorted by quantity desc, then id asc)
+**GET /api/v1/ducks** – List ducks (sorted by quantity desc, then id asc)
 ```json
 {
   "id": 1,
   "color": "Red",
   "size": "Large",
-  "price": 2500,
+  "price": 25.00,
   "quantity": 5,
   "version": 0
 }
 ```
 
-**PUT /api/ducks/:id** – Update duck (409 on conflict)
-**DELETE /api/ducks/:id** – Soft delete (204)
+**PUT /api/v1/ducks/:id** – Update duck (409 on conflict)
+**DELETE /api/v1/ducks/:id** – Soft delete (204)
 
 ### Store Endpoints
 
-**POST /api/store/orders** – Calculate order quote (read-only)
+**POST /api/v1/store/orders** – Calculate order quote (read-only)
 ```json
 {
   "package": "WOOD",
   "protection": ["POLYSTYRENE_BALLS"],
   "unitPrice": 1000,
-  "lineItems": [...],
+  "lineItems": [{ code: "BASE", label: "Base Price", amount: 5000 }, ...],
   "total": 51700,
   "currency": "USD"
 }
@@ -108,11 +108,11 @@ CREATE TABLE duck (
 
 ## API Documentation
 
-This API is fully documented using Swagger/OpenAPI. The Swagger UI provides interactive documentation where you can:
+This API is fully documented using Swagger/OpenAPI at `/api/docs`. The Swagger UI provides interactive documentation where you can:
 
 - View all available endpoints organized by tags (ducks, store, health, app)
 - See request/response schemas and examples
-- Test endpoints directly from your browser
+- Test endpoints directly from your browser using the interactive "Try it out" feature
 - Understand parameter requirements and validation rules
 
 **Swagger UI URL:** `http://localhost:3000/api/docs`

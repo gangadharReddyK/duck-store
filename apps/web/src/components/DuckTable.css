@@ -8,6 +8,7 @@
   overflow: hidden;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
   background: #fff;
+  table-layout: fixed;
 }
 
 .duck-table thead {
@@ -47,6 +48,9 @@
 .duck-table th .sort-indicator {
   margin-left: 4px;
   font-size: 12px;
+  display: inline-block;
+  min-width: 18px;
+  text-align: center;
 }
 
 .duck-table tbody {

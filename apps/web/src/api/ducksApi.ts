@@ -24,22 +24,22 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
 
 export const ducksApi = {
   list: async (params?: { sort?: string; order?: 'asc' | 'desc' }) => {
-    const url = new URL('/api/ducks', window.location.origin);
+    const url = new URL('/api/v1/ducks', window.location.origin);
     if (params?.sort) url.searchParams.set('sort', params.sort);
     if (params?.order) url.searchParams.set('order', params.order);
     return handleResponse<DuckResponse[]>(await fetch(url.href));
   },
   create: async (data: { color: string; size: string; price: number; quantity: number }) => {
     return handleResponse<DuckResponse>(
-      await fetch('/api/ducks', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }),
+      await fetch('/api/v1/ducks', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }),
     );
   },
   update: async (id: number, data: { price: number; quantity: number; version: number }) => {
     return handleResponse<DuckResponse>(
-      await fetch(`/api/ducks/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }),
+      await fetch(`/api/v1/ducks/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }),
     );
   },
   delete: async (id: number) => {
-    await handleResponse<void>(await fetch(`/api/ducks/${id}`, { method: 'DELETE' }));
+    await handleResponse<void>(await fetch(`/api/v1/ducks/${id}`, { method: 'DELETE' }));
   },
 };

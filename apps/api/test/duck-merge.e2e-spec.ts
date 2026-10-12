@@ -19,7 +19,7 @@ describe('Duck Merge Invariant', () => {
 
   test('same color+size+price posted twice -> exactly one row, quantities summed, second response is 200', async () => {
     const response1 = await request(app.getHttpServer())
-      .post('/api/ducks')
+      .post('/api/v1/ducks')
       .send({ color: 'Red', size: 'Large', price: 10.0, quantity: 5 });
 
     expect(response1.status).toBe(201);
@@ -27,7 +27,7 @@ describe('Duck Merge Invariant', () => {
     expect(response1.body.version).toBe(0);
 
     const response2 = await request(app.getHttpServer())
-      .post('/api/ducks')
+      .post('/api/v1/ducks')
       .send({ color: 'Red', size: 'Large', price: 10.0, quantity: 5 });
 
     expect(response2.status).toBe(200);
@@ -42,11 +42,11 @@ describe('Duck Merge Invariant', () => {
 
   test('same color+size, different price -> two rows', async () => {
     await request(app.getHttpServer())
-      .post('/api/ducks')
+      .post('/api/v1/ducks')
       .send({ color: 'Red', size: 'Large', price: 10.0, quantity: 5 });
 
     await request(app.getHttpServer())
-      .post('/api/ducks')
+      .post('/api/v1/ducks')
       .send({ color: 'Red', size: 'Large', price: 20.0, quantity: 3 });
 
     const rows = await query('SELECT color, size, price_cents, quantity FROM duck WHERE color = ? AND size = ?', ['Red', 'Large']);
@@ -59,7 +59,7 @@ describe('Duck Merge Invariant', () => {
   test('50 parallel POSTs (Promise.all) of the same duck with quantity 1 -> exactly one row, quantity 50', async () => {
     const payload = { color: 'Green', size: 'Medium', price: 5.0, quantity: 1 };
     const responses = await Promise.all(
-      Array(50).fill(payload).map(p => request(app.getHttpServer()).post('/api/ducks').send(p)),
+      Array(50).fill(payload).map(p => request(app.getHttpServer()).post('/api/v1/ducks').send(p)),
     );
 
     expect(responses.every(r => [201, 200].includes(r.status))).toBe(true);
@@ -72,7 +72,7 @@ describe('Duck Merge Invariant', () => {
 
   test('mark a row deleted via SQL, then POST the same duck -> a new active row, deleted row remains', async () => {
     const res1 = await request(app.getHttpServer())
-      .post('/api/ducks')
+      .post('/api/v1/ducks')
       .send({ color: 'Yellow', size: 'Small', price: 3.0, quantity: 4 });
 
     const rows = await query('SELECT * FROM duck WHERE color = ? AND size = ? AND price_cents = ?', ['Yellow', 'Small', 300]);
@@ -84,7 +84,7 @@ describe('Duck Merge Invariant', () => {
     await query('UPDATE duck SET deleted = 1 WHERE id = ?', [deletedRowId]);
 
     const res2 = await request(app.getHttpServer())
-      .post('/api/ducks')
+      .post('/api/v1/ducks')
       .send({ color: 'Yellow', size: 'Small', price: 3.0, quantity: 4 });
 
     expect(res2.status).toBe(201);

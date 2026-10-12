@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
-import { App } from 'supertest/types.js';
+import { INestApplication, App } from 'supertest/types.js';
 import request from 'supertest';
 import { configureApp } from '../src/common/app-setup.js';
 import { DuckController } from '../src/warehouse/duck.controller.js';
@@ -30,7 +29,7 @@ describe('DuckValidation', () => {
 
   it('rejects bad enum color', async () => {
     return request(app.getHttpServer())
-      .post('/api/ducks')
+      .post('/api/v1/ducks')
       .send({ color: 'Purple', size: 'Large', price: 10.0, quantity: 5 })
       .expect(400)
       .expect((res) => {
@@ -40,7 +39,7 @@ describe('DuckValidation', () => {
 
   it('rejects price with 3 decimals', async () => {
     return request(app.getHttpServer())
-      .post('/api/ducks')
+      .post('/api/v1/ducks')
       .send({ color: 'Red', size: 'Large', price: 1.234, quantity: 5 })
       .expect(400)
       .expect((res) => {
@@ -50,7 +49,7 @@ describe('DuckValidation', () => {
 
   it('rejects unknown field', async () => {
     return request(app.getHttpServer())
-      .post('/api/ducks')
+      .post('/api/v1/ducks')
       .send({ color: 'Red', size: 'Large', price: 10.0, quantity: 5, extra: true })
       .expect(400)
       .expect((res) => {
@@ -60,7 +59,7 @@ describe('DuckValidation', () => {
 
   it('rejects quantity 0 on create', async () => {
     return request(app.getHttpServer())
-      .post('/api/ducks')
+      .post('/api/v1/ducks')
       .send({ color: 'Red', size: 'Large', price: 10.0, quantity: 0 })
       .expect(400)
       .expect((res) => {

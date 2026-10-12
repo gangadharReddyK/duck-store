@@ -2,7 +2,7 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { getApp, query, clearDucks, stop } from './support/test-app.js';
 
-describe('POST /api/store/orders', () => {
+describe('POST /api/v1/store/orders', () => {
   let app: INestApplication;
 
   beforeAll(async () => {
@@ -18,10 +18,10 @@ describe('POST /api/store/orders', () => {
   }, 120000);
 
   const postOrder = (body: Record<string, any>) =>
-    request(app.getHttpServer()).post('/api/store/orders').send(body);
+    request(app.getHttpServer()).post('/api/v1/store/orders').send(body);
 
   const postDuck = (color: string, size: string, price: number, quantity: number) =>
-    request(app.getHttpServer()).post('/api/ducks').send({ color, size, price, quantity });
+    request(app.getHttpServer()).post('/api/v1/ducks').send({ color, size, price, quantity });
 
   describe('200 - valid order', () => {
     test('Large @5.00 Air India = 6992.00 (WOOD, [POLYSTYRENE_BALLS], 5 line items)', async () => {
@@ -31,7 +31,7 @@ describe('POST /api/store/orders', () => {
       await postDuck('Red', 'Large', 4.50, 50).expect(201); // too-small lot
       // And a deleted lot of same color+size (should be ignored)
       const deleted = await postDuck('Red', 'Large', 4.00, 300).expect(201);
-      await request(app.getHttpServer()).delete(`/api/ducks/${deleted.body.id}`).expect(204);
+      await request(app.getHttpServer()).delete(`/api/v1/ducks/${deleted.body.id}`).expect(204);
 
       const res = await postOrder({
         color: 'red', // lowercase accepted
@@ -93,7 +93,7 @@ describe('POST /api/store/orders', () => {
     test('deleted lots are ignored', async () => {
       await postDuck('Yellow', 'XLarge', 15.00, 100).expect(201);
       const deleted = await postDuck('Yellow', 'XLarge', 12.00, 200).expect(201);
-      await request(app.getHttpServer()).delete(`/api/ducks/${deleted.body.id}`).expect(204);
+      await request(app.getHttpServer()).delete(`/api/v1/ducks/${deleted.body.id}`).expect(204);
 
       const res = await postOrder({
         color: 'Yellow',

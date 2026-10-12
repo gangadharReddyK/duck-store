@@ -13,9 +13,15 @@ describe('AppController (e2e)', () => {
     await stop();
   }, 120000);
 
-  it('/api (GET)', () => {
+  it('/api (GET) -> 404, not versioned', () => {
     return request(app.getHttpServer())
       .get('/api')
+      .expect(404);
+  });
+
+  it('/api/v1 (GET)', () => {
+    return request(app.getHttpServer())
+      .get('/api/v1')
       .expect(200)
       .expect('Hello World!');
   });

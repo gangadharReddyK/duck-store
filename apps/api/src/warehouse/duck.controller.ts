@@ -24,6 +24,7 @@ export class DuckController {
   @Get()
   @ApiOperation({ summary: 'List all ducks with optional ordering' })
   @ApiQuery({ name: 'order', required: false, enum: ['asc', 'desc'], description: 'Sort order (asc or desc)' })
+  @ApiQuery({ name: 'sort', required: false, enum: ['quantity'], description: 'Field to sort by' })
   @ApiResponse({ status: 200, description: 'List of ducks returned successfully' })
   async list(@Query() query: ListDucksDto) {
     const order = query.order ?? 'desc';

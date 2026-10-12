@@ -2,7 +2,7 @@ import { INestApplication, ValidationPipe, ArgumentsHost, Catch, ExceptionFilter
 import { ValidationError } from 'class-validator';
 import { Request, Response, NextFunction } from 'express';
 
-export const GLOBAL_PREFIX = 'api';
+export const GLOBAL_PREFIX = 'api/v1';
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
