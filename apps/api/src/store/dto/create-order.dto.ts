@@ -42,6 +42,7 @@ export class CreateOrderDto {
     description: 'The color of the duck',
     example: 'red',
     enum: Color,
+    examples: ['red', 'RED', 'Green', 'YELLOW', 'black'],
   })
   @Transform(({ value }) => normaliseEnum(COLOR_MAP)(String(value)))
   @IsEnum(Color)
@@ -51,6 +52,7 @@ export class CreateOrderDto {
     description: 'The size of the duck',
     example: 'medium',
     enum: Size,
+    examples: ['medium', 'LARGE', 'Small', 'XSmall', 'xlarge'],
   })
   @Transform(({ value }) => normaliseEnum(SIZE_MAP)(String(value)))
   @IsEnum(Size)
@@ -60,6 +62,7 @@ export class CreateOrderDto {
     description: 'The quantity of ducks',
     example: 5,
     minimum: 1,
+    examples: [1, 10, 100, 101, 1000, 1001],
   })
   @Transform(({ value }) => Number(value))
   @IsNumber({ maxDecimalPlaces: 0 })
@@ -70,6 +73,7 @@ export class CreateOrderDto {
     description: 'The destination for shipping',
     example: 'New York, NY',
     minLength: 1,
+    examples: ['USA', 'Bolivia', 'India', 'Canada', 'Germany', 'Australia'],
   })
   @Transform(({ value }) => String(value ?? '').trim())
   @MinLength(1)
@@ -80,6 +84,7 @@ export class CreateOrderDto {
     description: 'The shipping mode',
     example: 'land',
     enum: ShippingMode,
+    examples: ['land', 'AIR', 'Sea', 'Land', 'air', 'sea'],
   })
   @Transform(({ value }) => normaliseEnum(SHIPPING_MODE_MAP)(String(value)))
   @IsEnum(ShippingMode)

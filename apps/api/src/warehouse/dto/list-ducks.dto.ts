@@ -8,6 +8,8 @@ export class ListDucksDto {
     description: 'Field to sort by',
     example: 'quantity',
     required: false,
+    type: 'string',
+    enum: SORT_FIELDS,
   })
   @IsOptional()
   @IsEnum(SORT_FIELDS, { message: 'sort must be "quantity"' })
@@ -17,6 +19,7 @@ export class ListDucksDto {
     description: 'Sort order',
     example: 'desc',
     required: false,
+    type: 'string',
     enum: ['asc', 'desc'],
   })
   @IsOptional()
